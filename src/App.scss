@@ -1,0 +1,107 @@
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: blueviolet;
+}
+
+@mixin box-shadow {
+  box-shadow: 10px 10px 5px -2px rgba(0, 0, 0, 0.19);
+  -webkit-box-shadow: 10px 10px 5px -2px rgba(0, 0, 0, 0.19);
+  -moz-box-shadow: 10px 10px 5px -2px rgba(0, 0, 0, 0.19);
+}
+
+.calculator-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f6f6;
+  margin-top: 128px;
+  border-radius: 15px;
+  @include box-shadow();
+
+  .calculator-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding-right: 8px;
+    width: auto;
+    height: 128px;
+    color: #0d6185;
+    #display-before {
+      padding-top: 8px;
+      font-size: 32px;
+      font-weight: 200;
+    }
+    #display {
+      padding-top: 8px;
+      font-size: 44px;
+      font-weight: 300;
+    }
+  }
+  .calculator-bottom {
+    .row {
+      display: flex;
+      div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 64px;
+        height: 64px;
+      }
+    }
+    .row-bottom {
+      display: flex;
+      div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 64px;
+        height: 64px;
+      }
+      #equals {
+        position: absolute;
+        right: 8px;
+        margin-right: 0;
+        width: 128px;
+        height: 64px;
+        background-color: #61c6f2;
+        color: #f6f6f6;
+        border-radius: 15px;
+      }
+    }
+    .color {
+      background-color: #61c6f2;
+      color: #f6f6f6;
+      font-size: 24px;
+      font-weight: 200;
+      border-radius: 50%;
+      margin: 8px;
+      box-shadow: 7px 6px 10px 1px rgba(0, 0, 0, 0.24);
+      transition: 0.2s;
+      cursor: pointer;
+      &:hover {
+        transform: scale(0.95);
+        box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+        transition: 0.2s;
+      }
+    }
+    .colorless {
+      background-color: #f6f6f6;
+      color: #4c96bd;
+      font-size: 24px;
+      font-weight: 300;
+      border-radius: 50%;
+      margin: 8px;
+      box-shadow: 7px 6px 10px 1px rgba(0, 0, 0, 0.24);
+      transition: 0.2s;
+      cursor: pointer;
+      &:hover {
+        transform: scale(0.95);
+        box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+        transition: 0.2s;
+      }
+    }
+  }
+}
