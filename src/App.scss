@@ -32,7 +32,7 @@
   flex-direction: column;
   background-color: #f6f6f6;
   border-radius: 15px;
-  padding-bottom: 8px;
+  padding: 16px;
   /* @include box-shadow(); */
   @include box-shadow-2();
 
@@ -46,11 +46,13 @@
     height: 128px;
     color: #0d6185;
     #display-before {
+      display: flex;
       padding-top: 8px;
       font-size: 32px;
       font-weight: 200;
     }
     #display {
+      display: flex;
       padding-top: 8px;
       font-size: 44px;
       font-weight: 300;
@@ -79,7 +81,7 @@
       #equals {
         position: absolute;
         right: 8px;
-        margin-right: 0;
+        margin-right: 16px;
         width: 128px;
         height: 64px;
         background-color: #61c6f2;
