@@ -1,9 +1,13 @@
 import './App.scss'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function App() {
   const [displayBefore, setDisplayBefore] = useState('')
   const [display, setDisplay] = useState('0')
+  const [displayClasses, setDisplayClasses] = useState({
+    displayBefore: '',
+    display: '',
+  })
   const operators = ['+', '-', '*', '/', '%', '.']
 
   const handleNumberClick = (e) => {
@@ -64,7 +68,17 @@ function App() {
   }
 
   const checkIfDecimal = (result) => {
-    return result.indexOf('.') !== -1
+    const isDecimal = result.indexOf('.') !== -1
+    // Also check length of result
+    if (isDecimal || result.length > 10) {
+      setDisplayClasses({
+        displayBefore: 'display-before-decimal',
+        display: 'display-decimal',
+      })
+    } else {
+      setDisplayClasses({ displayBefore: '', display: '' })
+    }
+    return isDecimal
   }
 
   const handleEqualButton = () => {
@@ -78,6 +92,8 @@ function App() {
       ? String(result.toFixed(2))
       : String(result) */
 
+    checkIfDecimal(resultAsText)
+
     setDisplayBefore(resultAsText)
     setDisplay(resultAsText)
   }
@@ -86,8 +102,12 @@ function App() {
     <div className="app">
       <div className="calculator-container">
         <div className="calculator-top">
-          <div id="display-before">{displayBefore}</div>
-          <div id="display">{display}</div>
+          <div id="display-before" className={displayClasses.displayBefore}>
+            {displayBefore}
+          </div>
+          <div id="display" className={displayClasses.display}>
+            {display}
+          </div>
         </div>
         <div className="calculator-bottom">
           <div className="row">

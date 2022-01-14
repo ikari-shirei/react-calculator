@@ -45,17 +45,28 @@
     width: auto;
     height: 128px;
     color: #0d6185;
+    max-width: 350px;
+    overflow-y: hidden;
+
     #display-before {
       display: flex;
       padding-top: 8px;
       font-size: 32px;
       font-weight: 200;
+      word-wrap: break-word;
+    }
+    .display-before-decimal {
+      font-size: 16px !important;
     }
     #display {
-      display: flex;
+      display: inline-block;
       padding-top: 8px;
       font-size: 44px;
       font-weight: 300;
+      max-width: 280px;
+    }
+    .display-decimal {
+      font-size: 24px !important;
     }
   }
   .calculator-bottom {
