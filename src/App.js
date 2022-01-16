@@ -10,6 +10,14 @@ function App() {
   })
   const operators = ['+', '-', '*', '/', '%', '.']
 
+  let newDisplay = display.slice()
+
+  const returnLastChar = () => {
+    const lastCharOfResult = newDisplay.substring(newDisplay.length - 1)
+
+    return lastCharOfResult
+  }
+
   const handleNumberClick = (e) => {
     const numberAsText = e.target.textContent
     if (display === 0 || display === '0' || display === 'Infinity') {
@@ -23,7 +31,15 @@ function App() {
     const operator = e.target.textContent
     if (display === 0 || display === '0' || display === 'Infinity') {
       setDisplay('0')
-    } else {
+    } else if (!operators.includes(returnLastChar())) {
+      setDisplay(display.concat(operator))
+    }
+
+    if (
+      operator === '-' &&
+      returnLastChar() !== '-' &&
+      returnLastChar() !== '0'
+    ) {
       setDisplay(display.concat(operator))
     }
   }
@@ -31,17 +47,18 @@ function App() {
   const handleClearButton = () => {
     setDisplayBefore('')
     setDisplay('0')
-  }
 
-  let newDisplay = display.slice()
+    //Font size return's initial state
+    checkLengthOfResult('')
+  }
 
   // control if last char of equation is operator or not
   const controlLastChar = () => {
     const lastCharOfResult = newDisplay.substring(newDisplay.length - 1)
     let excludeLastCharOfResult = newDisplay.substring(0, newDisplay.length - 1)
+
     if (operators.includes(lastCharOfResult)) {
       newDisplay = String(excludeLastCharOfResult)
-      controlLastChar()
     }
   }
 
@@ -60,17 +77,24 @@ function App() {
   }
 
   const handleDecimalButton = () => {
-    controlLastChar()
-
-    if (display !== 0 && display !== '0' && display !== 'Infinity') {
+    if (
+      display !== 0 &&
+      display !== '0' &&
+      display !== 'Infinity' &&
+      returnLastChar() !== '.'
+    ) {
       setDisplay(display.concat('.'))
     }
   }
 
   const checkIfDecimal = (result) => {
     const isDecimal = result.indexOf('.') !== -1
-    // Also check length of result
-    if (isDecimal || result.length > 10) {
+
+    return isDecimal
+  }
+
+  const checkLengthOfResult = (result) => {
+    if (result.length > 10) {
       setDisplayClasses({
         displayBefore: 'display-before-decimal',
         display: 'display-decimal',
@@ -78,7 +102,6 @@ function App() {
     } else {
       setDisplayClasses({ displayBefore: '', display: '' })
     }
-    return isDecimal
   }
 
   const handleEqualButton = () => {
@@ -93,6 +116,7 @@ function App() {
       : String(result) */
 
     checkIfDecimal(resultAsText)
+    checkLengthOfResult(resultAsText)
 
     setDisplayBefore(resultAsText)
     setDisplay(resultAsText)
