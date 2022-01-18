@@ -14,7 +14,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -36,6 +37,8 @@
     ]
   },
   "devDependencies": {
+    "enzyme": "^3.11.0",
+    "jest": "^27.4.7",
     "sass": "^1.47.0",
     "sass-loader": "^12.4.0",
     "webpack": "^5.66.0"

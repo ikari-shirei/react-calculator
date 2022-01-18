@@ -9,6 +9,7 @@ function App() {
     display: '',
   })
   const operators = ['+', '-', '*', '/', '%', '.']
+  const operatorsWithoutDecimal = ['+', '-', '*', '/', '%']
 
   let newDisplay = display.slice()
 
@@ -38,7 +39,8 @@ function App() {
     if (
       operator === '-' &&
       returnLastChar() !== '-' &&
-      returnLastChar() !== '0'
+      returnLastChar() !== '0' &&
+      returnLastChar() !== '.'
     ) {
       setDisplay(display.concat(operator))
     }
@@ -75,6 +77,11 @@ function App() {
       }
     }
   }
+
+  //
+  const checkIfDecimalCorrect = () => {}
+
+  checkIfDecimalCorrect()
 
   const handleDecimalButton = () => {
     if (
