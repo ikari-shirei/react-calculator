@@ -28,7 +28,11 @@ function App() {
   const handleOperatorClick = (e) => {
     const operator = e.target.textContent
 
-    if (display.length > 0) {
+    if (
+      display.length > 0 &&
+      display !== '.' &&
+      returnLastChar(display) !== '.'
+    ) {
       if (Number(display) < 0) {
         const negativeDisplayInParentheses = `(${display})`
         setDisplayBefore(
@@ -39,6 +43,17 @@ function App() {
         setDisplayBefore(displayBefore.concat(display.concat(operator)))
         setDisplay('')
       }
+    } else {
+      if (
+        operators.includes(returnLastChar(displayBefore)) &&
+        operator !== '-'
+      ) {
+        setDisplayBefore(displayBefore.slice(0, -1) + operator)
+      }
+    }
+
+    if ((operator === '-' && display === '') || display === '0') {
+      setDisplay('-')
     }
   }
 
