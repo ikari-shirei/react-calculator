@@ -1,5 +1,11 @@
 import './App.scss'
 import { useState, useEffect } from 'react'
+import {
+  handleKeyboard,
+  handleEqual,
+  handleClear,
+  handleLastChar,
+} from './utils/handleKeyboard'
 
 function App() {
   const [displayBefore, setDisplayBefore] = useState('')
@@ -8,7 +14,14 @@ function App() {
     displayBefore: '',
     display: '',
   })
+  const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
   const operators = ['+', '-', '*', '/', '%', '.']
+
+  useEffect(() => handleKeyboard(handleNumberClick), [display])
+  useEffect(() => handleKeyboard(handleOperatorClick), [display])
+  useEffect(() => handleEqual(handleEqualButton), [display])
+  useEffect(() => handleClear(handleClearButton), [display])
+  useEffect(() => handleLastChar(removeLastChar), [display])
 
   const returnLastChar = (currentDisplay) => {
     const lastCharOfResult = currentDisplay.substring(currentDisplay.length - 1)
@@ -18,42 +31,47 @@ function App() {
 
   const handleNumberClick = (e) => {
     const numberAsText = e.target.textContent
-    if (display === 0 || display === '0' || display === 'Infinity') {
-      setDisplay(numberAsText)
-    } else {
-      setDisplay(display.concat(numberAsText))
+    if (numbers.includes(numberAsText)) {
+      if (display === 0 || display === '0' || display === 'Infinity') {
+        setDisplay(numberAsText)
+        console.log(display)
+      } else {
+        setDisplay(display.concat(numberAsText))
+      }
     }
   }
 
   const handleOperatorClick = (e) => {
     const operator = e.target.textContent
 
-    if (
-      display.length > 0 &&
-      display !== '.' &&
-      returnLastChar(display) !== '.'
-    ) {
-      if (Number(display) < 0) {
-        const negativeDisplayInParentheses = `(${display})`
-        setDisplayBefore(
-          displayBefore.concat(negativeDisplayInParentheses.concat(operator))
-        )
-        setDisplay('')
-      } else {
-        setDisplayBefore(displayBefore.concat(display.concat(operator)))
-        setDisplay('')
-      }
-    } else {
+    if (operators.includes(operator)) {
       if (
-        operators.includes(returnLastChar(displayBefore)) &&
-        operator !== '-'
+        display.length > 0 &&
+        display !== '.' &&
+        returnLastChar(display) !== '.'
       ) {
-        setDisplayBefore(displayBefore.slice(0, -1) + operator)
+        if (Number(display) < 0) {
+          const negativeDisplayInParentheses = `(${display})`
+          setDisplayBefore(
+            displayBefore.concat(negativeDisplayInParentheses.concat(operator))
+          )
+          setDisplay('')
+        } else {
+          setDisplayBefore(displayBefore.concat(display.concat(operator)))
+          setDisplay('')
+        }
+      } else {
+        if (
+          operators.includes(returnLastChar(displayBefore)) &&
+          operator !== '-'
+        ) {
+          setDisplayBefore(displayBefore.slice(0, -1) + operator)
+        }
       }
-    }
 
-    if ((operator === '-' && display === '') || display === '0') {
-      setDisplay('-')
+      if ((operator === '-' && display === '') || display === '0') {
+        setDisplay('-')
+      }
     }
   }
 
@@ -75,6 +93,12 @@ function App() {
   const handleClearButton = () => {
     setDisplayBefore('')
     setDisplay('0')
+  }
+
+  const removeLastChar = () => {
+    if (display !== '') {
+      setDisplay(display.slice(0, -1))
+    }
   }
 
   const handleEqualButton = () => {
