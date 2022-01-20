@@ -1,5 +1,11 @@
 import './App.scss'
 import { useState, useEffect } from 'react'
+import {
+  handleKeyboard,
+  handleEqual,
+  handleClear,
+  handleLastChar,
+} from './utils/handleKeyboard'
 
 function App() {
   const [displayBefore, setDisplayBefore] = useState('')
@@ -8,125 +14,111 @@ function App() {
     displayBefore: '',
     display: '',
   })
+  const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
   const operators = ['+', '-', '*', '/', '%', '.']
-  const operatorsWithoutDecimal = ['+', '-', '*', '/', '%']
 
-  let newDisplay = display.slice()
+  useEffect(() => handleKeyboard(handleNumberClick), [display])
+  useEffect(() => handleKeyboard(handleOperatorClick), [display])
+  useEffect(() => handleEqual(handleEqualButton), [display])
+  useEffect(() => handleClear(handleClearButton), [display])
+  useEffect(() => handleLastChar(removeLastChar), [display])
 
-  const returnLastChar = () => {
-    const lastCharOfResult = newDisplay.substring(newDisplay.length - 1)
+  const returnLastChar = (currentDisplay) => {
+    const lastCharOfResult = currentDisplay.substring(currentDisplay.length - 1)
 
     return lastCharOfResult
   }
 
   const handleNumberClick = (e) => {
     const numberAsText = e.target.textContent
-    if (display === 0 || display === '0' || display === 'Infinity') {
-      setDisplay(numberAsText)
-    } else {
-      setDisplay(display.concat(numberAsText))
+    if (numbers.includes(numberAsText)) {
+      if (display === 0 || display === '0' || display === 'Infinity') {
+        setDisplay(numberAsText)
+        console.log(display)
+      } else {
+        setDisplay(display.concat(numberAsText))
+      }
     }
   }
 
   const handleOperatorClick = (e) => {
     const operator = e.target.textContent
-    if (display === 0 || display === '0' || display === 'Infinity') {
-      setDisplay('0')
-    } else if (!operators.includes(returnLastChar())) {
-      setDisplay(display.concat(operator))
-    }
 
-    if (
-      operator === '-' &&
-      returnLastChar() !== '-' &&
-      returnLastChar() !== '0' &&
-      returnLastChar() !== '.'
-    ) {
-      setDisplay(display.concat(operator))
+    if (operators.includes(operator)) {
+      if (
+        display.length > 0 &&
+        display !== '.' &&
+        returnLastChar(display) !== '.'
+      ) {
+        if (Number(display) < 0) {
+          const negativeDisplayInParentheses = `(${display})`
+          setDisplayBefore(
+            displayBefore.concat(negativeDisplayInParentheses.concat(operator))
+          )
+          setDisplay('')
+        } else {
+          setDisplayBefore(displayBefore.concat(display.concat(operator)))
+          setDisplay('')
+        }
+      } else {
+        if (operators.includes(returnLastChar(displayBefore))) {
+          setDisplayBefore(displayBefore.slice(0, -1) + operator)
+        }
+      }
+    }
+  }
+
+  const handlePositiveNegativeButton = () => {
+    if (Number(display) > 0) {
+      setDisplay(String(Number(display) * -1))
+    } else if (Number(display) < 0) {
+      setDisplay(String(Math.abs(Number(display))))
+    }
+  }
+
+  const handleDecimalButton = () => {
+    console.log(display.charAt(display.length - 1))
+    if (!display.split('').find((x) => x === '.')) {
+      setDisplay(display.concat('.'))
     }
   }
 
   const handleClearButton = () => {
     setDisplayBefore('')
     setDisplay('0')
-
-    //Font size return's initial state
-    checkLengthOfResult('')
   }
 
-  // control if last char of equation is operator or not
-  const controlLastChar = () => {
-    const lastCharOfResult = newDisplay.substring(newDisplay.length - 1)
-    let excludeLastCharOfResult = newDisplay.substring(0, newDisplay.length - 1)
-
-    if (operators.includes(lastCharOfResult)) {
-      newDisplay = String(excludeLastCharOfResult)
-    }
-  }
-
-  const handlePositiveNegativeButton = () => {
-    controlLastChar()
-
-    if (display !== 'Infinity') {
-      if (display && display > 0) {
-        const newDisplay = display * -1
-        setDisplay(String(newDisplay))
-      } else {
-        const newDisplay = Math.abs(display)
-        setDisplay(String(newDisplay))
-      }
-    }
-  }
-
-  //
-  const checkIfDecimalCorrect = () => {}
-
-  checkIfDecimalCorrect()
-
-  const handleDecimalButton = () => {
-    if (
-      display !== 0 &&
-      display !== '0' &&
-      display !== 'Infinity' &&
-      returnLastChar() !== '.'
-    ) {
-      setDisplay(display.concat('.'))
-    }
-  }
-
-  const checkIfDecimal = (result) => {
-    const isDecimal = result.indexOf('.') !== -1
-
-    return isDecimal
-  }
-
-  const checkLengthOfResult = (result) => {
-    if (result.length > 10) {
-      setDisplayClasses({
-        displayBefore: 'display-before-decimal',
-        display: 'display-decimal',
-      })
-    } else {
-      setDisplayClasses({ displayBefore: '', display: '' })
+  const removeLastChar = () => {
+    if (display !== '') {
+      setDisplay(display.slice(0, -1))
     }
   }
 
   const handleEqualButton = () => {
-    controlLastChar()
+    let result
 
-    let result = eval(newDisplay)
-    let resultAsText = String(result)
+    const displayBeforeWithoutLastOperator = displayBefore.substring(
+      -1,
+      displayBefore.length - 1
+    )
 
-    // Fix the number if it is decimal
-    /* resultAsText = checkIfDecimal(resultAsText)
-      ? String(result.toFixed(2))
-      : String(result) */
+    if (display === '') {
+      result = eval(displayBeforeWithoutLastOperator)
+    } else {
+      if (Number(display) < 0) {
+        const negativeDisplayInParentheses = `(${display})`
+        const concatDisplays = displayBefore.concat(
+          negativeDisplayInParentheses
+        )
 
-    checkIfDecimal(resultAsText)
-    checkLengthOfResult(resultAsText)
+        result = eval(concatDisplays)
+      } else {
+        result = eval(displayBefore.concat(display))
+      }
+    }
 
-    setDisplayBefore(resultAsText)
-    setDisplay(resultAsText)
+    setDisplayBefore('')
+    setDisplay(String(result))
   }
 
   return (
