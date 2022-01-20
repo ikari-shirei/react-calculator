@@ -61,16 +61,9 @@ function App() {
           setDisplay('')
         }
       } else {
-        if (
-          operators.includes(returnLastChar(displayBefore)) &&
-          operator !== '-'
-        ) {
+        if (operators.includes(returnLastChar(displayBefore))) {
           setDisplayBefore(displayBefore.slice(0, -1) + operator)
         }
-      }
-
-      if ((operator === '-' && display === '') || display === '0') {
-        setDisplay('-')
       }
     }
   }
